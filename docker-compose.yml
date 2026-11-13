@@ -1,0 +1,43 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: beatsync-mongo
+    environment:
+      MONGO_INITDB_DATABASE: beatsync
+    ports:
+      - "27017:27017"
+    volumes:
+      - beatsync_mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  api:
+    build:
+      context: ./backend
+    container_name: beatsync-api
+    environment:
+      SPRING_MONGODB_URI: mongodb://mongo:27017/beatsync
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/beatsync
+      SERVER_PORT: "8091"
+      CORS_ORIGINS: http://localhost:3847,http://127.0.0.1:3847,http://web:80
+    ports:
+      - "8091:8091"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+    container_name: beatsync-web
+    ports:
+      - "3847:80"
+    depends_on:
+      - api
+
+volumes:
+  beatsync_mongo_data:

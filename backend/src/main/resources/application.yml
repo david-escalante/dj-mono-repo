@@ -1,0 +1,25 @@
+server:
+  port: ${SERVER_PORT:8091}
+
+spring:
+  application:
+    name: beatsync-api
+  mongodb:
+    uri: ${SPRING_MONGODB_URI:${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/beatsync}}
+    auto-index-creation: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mongo:
+      enabled: true
+
+beatsync:
+  cors-origins: ${CORS_ORIGINS:http://localhost:3847,http://127.0.0.1:3847}
+  seed-resource: classpath:data/songs.csv
