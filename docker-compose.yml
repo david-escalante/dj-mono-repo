@@ -19,11 +19,13 @@ services:
     build:
       context: ./backend
     container_name: beatsync-api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      SPRING_MONGODB_URI: mongodb://mongo:27017/beatsync
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/beatsync
+      SPRING_MONGODB_URI: mongodb://host.docker.internal:27017/beatsync
+      SPRING_DATA_MONGODB_URI: mongodb://host.docker.internal:27017/beatsync
       SERVER_PORT: "8091"
-      CORS_ORIGINS: http://localhost:3847,http://127.0.0.1:3847,http://web:80
+      CORS_ORIGINS: http://localhost:3847,http://127.0.0.1:3847
     ports:
       - "8091:8091"
     depends_on:
@@ -34,6 +36,8 @@ services:
     build:
       context: ./frontend
     container_name: beatsync-web
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "3847:80"
     depends_on:

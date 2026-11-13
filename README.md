@@ -59,3 +59,5 @@ cd backend && mvn -q test
 ```
 
 Compose file lives at the repo root (`docker compose up --build`). Mongo data is stored in the `beatsync_mongo_data` volume.
+
+The API and nginx proxy connect to Mongo/API through `host.docker.internal` (Compose `host-gateway`) so the stack still works when the Docker bridge cannot route container-to-container traffic. Mongo (`27017`) and the API (`8091`) are published on the host.
